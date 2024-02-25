@@ -1,0 +1,11 @@
+{
+  "appId": "com.purchasetracker.ek",
+  "appName": "Purchase Tracker",
+  "bundledWebRuntime": false,
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}
