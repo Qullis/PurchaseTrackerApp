@@ -12,17 +12,17 @@ const NavBar = () => {
                     </button>
                     <div className="collapse navbar-collapse" id="collapsibleNavbar">
                         <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link to={'/'}>Home</Link>
+                            <li className="nav-item mx-2">
+                                <Link className="text-white text-decoration-none" to={'/'}>Home</Link>
                             </li>
-                            <li className="nav-item">
-                                <Link to={'purchases/read'}>My purchases</Link>
+                            <li className="nav-item mx-2">
+                                <Link className="text-white text-decoration-none" to={'purchases/read'}>All purchases</Link>
                             </li>
-                            <li className="nav-item">
-                                <Link to={'purchases/add'}>Add new purchase</Link>
+                            <li className="nav-item mx-2">
+                                <Link className="text-white text-decoration-none" to={'purchases/add'}>Add new purchase</Link>
                             </li>
-                            <li className="nav-item">
-                                <Link to={'app/options'}>Options</Link>
+                            <li className="nav-item mx-2">
+                                <Link className="text-white text-decoration-none" to={'app/options'}>Options</Link>
                             </li>
                         </ul>
                     </div>

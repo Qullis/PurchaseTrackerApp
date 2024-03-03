@@ -1,6 +1,6 @@
 
 
-const PurchasesPage = () => {
+const AllPurchasesPage = () => {
 
 
     return (
@@ -12,4 +12,4 @@ const PurchasesPage = () => {
     )
 }
 
-export default PurchasesPage;
+export default AllPurchasesPage;

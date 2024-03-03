@@ -5,29 +5,39 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+//routes/pages
 import Root from './js/routes/Root';
-import HomePage from './js/routes/HomePage';
-import PurchasesPage from './js/routes/PurchasesPage';
+import Index from './js/routes/Index';
+import AllPurchasesPage from './js/routes/AllPurchasesPage';
+import PurchasesByCategoryPage from './js/routes/PurchasesByCategoryPage';
 
 //Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 //Bootstrap bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
-
+//capacitor specific code
 import './js/App'
+//PurchaseService for handling data storage
+import PurchaseService from './js/services/storage/PurchaseService';
+const purchaseService = new PurchaseService;
+purchaseService.initialize();
 
 const router = createBrowserRouter([
   {
-    path: "",
+    path: "/",
     element: <Root />,
     children: [
-      {
-        path: "/",
-        element: <HomePage />,
+      { 
+        index: true, 
+        element: <Index purchaseService={purchaseService}/> 
       },
       {
         path: "purchases/read",
-        element: <PurchasesPage />,
+        element: <AllPurchasesPage />,
+      },
+      {
+        path: "purchasesByCategory/read",
+        element: <PurchasesByCategoryPage purchaseService={purchaseService}/>,
       }
     ],
   },
