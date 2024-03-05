@@ -1,5 +1,3 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
+.body-bg {
+  background-color: rgb(60, 59, 59);
 }

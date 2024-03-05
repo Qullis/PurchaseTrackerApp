@@ -16,10 +16,10 @@ const NavBar = () => {
                                 <Link className="text-white text-decoration-none" to={'/'}>Home</Link>
                             </li>
                             <li className="nav-item mx-2">
-                                <Link className="text-white text-decoration-none" to={'purchases/read'}>All purchases</Link>
+                                <Link className="text-white text-decoration-none" to={'purchases/read/all'}>All purchases</Link>
                             </li>
                             <li className="nav-item mx-2">
-                                <Link className="text-white text-decoration-none" to={'purchases/add'}>Add new purchase</Link>
+                                <Link className="text-white text-decoration-none" to={'categories/add'}>Add new category</Link>
                             </li>
                             <li className="nav-item mx-2">
                                 <Link className="text-white text-decoration-none" to={'app/options'}>Options</Link>

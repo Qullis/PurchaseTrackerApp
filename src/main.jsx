@@ -7,9 +7,10 @@ import {
 
 //routes/pages
 import Root from './js/routes/Root';
-import Index from './js/routes/Index';
-import AllPurchasesPage from './js/routes/AllPurchasesPage';
-import PurchasesByCategoryPage from './js/routes/PurchasesByCategoryPage';
+import Index, {loader as indexLoader} from './js/routes/Index';
+import AllPurchasesPage, {loader as allPurchasesLoader} from './js/routes/AllPurchasesPage';
+import PurchasesByCategoryPage, {loader as purchasesByCategoryLoader} from './js/routes/PurchasesByCategoryPage';
+import AddNewCategoryPage, {action as addCategoryAction} from './js/routes/AddNewCategoryPage';
 
 //Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,26 +19,33 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 //capacitor specific code
 import './js/App'
 //PurchaseService for handling data storage
-import PurchaseService from './js/services/storage/PurchaseService';
-const purchaseService = new PurchaseService;
-purchaseService.initialize();
+import { purchaseService } from './js/routes/Root';
+
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <Root/>,
     children: [
       { 
         index: true, 
-        element: <Index purchaseService={purchaseService}/> 
+        element: <Index />, 
+        loader: indexLoader,
       },
       {
-        path: "purchases/read",
+        path: "purchases/read/all",
         element: <AllPurchasesPage />,
+        loader: allPurchasesLoader,
       },
       {
-        path: "purchasesByCategory/read",
-        element: <PurchasesByCategoryPage purchaseService={purchaseService}/>,
+        path: "purchases/read/:categoryId",
+        element: <PurchasesByCategoryPage />,
+        loader: purchasesByCategoryLoader,
+      },
+      {
+        path: "categories/add",
+        element: <AddNewCategoryPage />,
+        action: addCategoryAction,
       }
     ],
   },

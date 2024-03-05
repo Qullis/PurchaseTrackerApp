@@ -1,13 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
+import { purchaseService } from "./Root";
 
-const PurchasesByCategoryPage = ({purchaseService}) => {
+export const loader = async ({ params }) => {
+    const id = parseInt(params.categoryId);
+    const purchases = await purchaseService.findPurchaseByCategory(id)
+    return {purchases};
+  }
 
-    const category = 'Medical'; // hardcoded for now
-    const purchases = purchaseService.findByCategory(category);
+const PurchasesByCategoryPage = () => {
+
+    const {purchases} = useLoaderData();
     const purchasesTable = purchases.map((purchase) => {
         return (
-            <tr key={purchase.purchaseId}>
-                <td><Link to={'purchases/purchase/' + purchase.purchaseId}>{purchase.purchaseName}</Link></td>
+            <tr key={purchase.id}>
+                <td>&#9432;&emsp;<Link to={'purchases/purchase/' + purchase.id} className="text-white">{purchase.purchaseName}</Link></td>
                 <td>{purchase.cost}</td>
                 <td>{purchase.purchaseDate}</td>
             </tr>
@@ -15,14 +21,17 @@ const PurchasesByCategoryPage = ({purchaseService}) => {
     });
     return (
         <>
-            <table className="table table-striped table-dark">
-                <thead>
-                    <th>Purchase: </th><th> Cost: </th> <th> Purchase-date:</th>
-                </thead>
-                <tbody>
-                    {purchasesTable}
-                </tbody>
-            </table>
+            <div className="my-2">
+                <table className="table table-striped table-dark">
+                    <thead className="table-info">
+                        <tr><th className="bg-light">Purchase: </th><th className="bg-light"> Cost: </th><th className="bg-light"> Purchase-date:</th></tr>
+                    </thead>
+                    <tbody>
+                        {purchasesTable}
+                    </tbody>
+                </table>
+            </div>
+
         </>
     )
 }

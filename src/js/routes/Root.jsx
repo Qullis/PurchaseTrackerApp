@@ -3,12 +3,17 @@ import { Outlet } from "react-router-dom"
 
 import NavBar from "../components/Navbar"
 
+import PurchaseService from '../services/storage/PurchaseService';
+const purchaseService = new PurchaseService;
+
+purchaseService.initialize();
+
 const Root = () => {
 
 
     return (
         <>
-            <div className="bg-secondary">
+            <div>
                 <NavBar />
                 <Outlet />
             </div>
@@ -16,5 +21,5 @@ const Root = () => {
         </>
     )
 }
-
-export default Root
+export {purchaseService}
+export default Root;

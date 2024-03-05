@@ -1,40 +1,46 @@
-import { Link } from "react-router-dom";
+import CategoryCard from "../components/CategoryCard";
+import { Link, useLoaderData } from "react-router-dom";
 
-const Index = ({purchaseService}) => {
+import { purchaseService } from "./Root";
+export async function loader() {
+    const purchases = await purchaseService.findAllPurchases();
+    const categories = await purchaseService.findAllCategories();
+    return {
+        purchases, categories
+    }
+}
 
-
+const Index = () => {
+    const {categories, purchases} = useLoaderData();
+    //const categories = [];
+    let categoryList = null;
+    if (categories.length > 0) {
+        categoryList = categories.map((category) => {
+            let totalSum = 0;
+            purchases.forEach((purchase) => {
+                if (purchase.categoryId === category.id) {
+                    totalSum += purchase.cost;
+                }
+            })
+            return (
+                <CategoryCard key={category.id} category={category.categoryName} totalSum={totalSum} link={'purchases/read/' + category.id} lastUpdated={'22.12.2023'} description={category.description} />
+            )
+        })
+    }
+    else (categoryList = (
+        <div class="card m-2">
+            <h5 class="card-header">Info</h5>
+            <div class="card-body">
+                <h5 class="card-title">Create a new category</h5>
+                <p class="card-text">Welcome! To start using the app and add spendings, first you need to create a new category. Then you can start to add your purchases.</p>
+                <Link to={'categories/add'} class="btn btn-primary">Create new category</Link>
+            </div>
+        </div>
+    ))
     return (
         <>
-            <div className="card text-center m-2">
-                <div className="card-header">
-                    Category
-                </div>
-                <div className="card-body">
-                    <h5 className="card-title">Medical</h5>
-                    <p className="card-text text-danger fs-2">2000€</p>
-                    <Link to={'purchasesByCategory/read'} className="btn btn-primary">See all purchases</Link>
-                </div>
-                <div className="card-footer text-muted">
-                    Last updated 21.02.2024
-                </div>
-            </div>
-            <div className="card text-center m-2">
-                <div className="card-header">
-                    Category
-                </div>
-                <div className="card-body">
-                    <h5 className="card-title">Groceries</h5>
-                    <p className="card-text text-danger fs-2">1290€</p>
-                    <a href="#" className="btn btn-primary">See all purchases</a>
-                </div>
-                <div className="card-footer text-muted">
-                    Last updated 29.02.2024
-                </div>
-            </div>
-            <div className="text-center">
-                <Link to={'/'} className="btn btn-primary mx-5 mt-5">Add new Category</Link>
-            </div>
-            
+            {categoryList}
+
         </>
     )
 }

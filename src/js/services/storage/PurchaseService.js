@@ -5,47 +5,83 @@ class PurchaseService {
         this.purchases = [];
         this.categories = [];
     }
-    static lastUsedIdValue = 0;
+    static lastUsedidValue = 0;
+    static lastUsedCategoryIdValue = 0;
 
-    static getNextId = () => {
-        PurchaseService.lastUsedIdValue = PurchaseService.lastUsedIdValue + 1;
-        return PurchaseService.lastUsedIdValue;
+    static getNextid = () => {
+        PurchaseService.lastUsedidValue = PurchaseService.lastUsedidValue + 1;
+        return PurchaseService.lastUsedidValue;
+    }
+
+    static getNextCategoryId = () => {
+        PurchaseService.lastUsedCategoryIdValue = PurchaseService.lastUsedCategoryIdValue + 1;
+        return PurchaseService.lastUsedCategoryIdValue;
     }
 
     initialize = () => {
         //temporarily add some test data here
-        const purchase = {purchaseId: null, purchaseName: 'Insulin', cost: 200, reciept: '', notes: '2 mån förbrukning', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '22.12.2023', category: 'Medical'}
-        this.persist(purchase);
-        const purchase2 = {purchaseId: null, purchaseName: 'Ozempic', cost: 120, reciept: '', notes: 'Vasa apotek', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '01.03.2024', category: 'Medical'}
-        this.persist(purchase2);
-        const purchase3 = {purchaseId: null, purchaseName: 'Plåster', cost: 10, reciept: '', notes: '', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '26.11.2023', category: 'Medical'}
-        this.persist(purchase3);
-        const purchase4 = {purchaseId: null, purchaseName: 'Mat', cost: 55, reciept: '', notes: 'Ost å bulla', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '21.04.2023', category: 'Groceries'}
-        this.persist(purchase4);
+        const purchase = {id: null, purchaseName: 'Insulin', cost: 200, reciept: '', notes: '2 mån förbrukning', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '22.12.2023', categoryId: 1}
+        this.persistPurchase(purchase);
+        const purchase2 = {id: null, purchaseName: 'Ozempic', cost: 120, reciept: '', notes: 'Vasa apotek', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '01.03.2024', categoryId: 1}
+        this.persistPurchase(purchase2);
+        const purchase3 = {id: null, purchaseName: 'Plåster', cost: 10, reciept: '', notes: '', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '26.11.2023', categoryId: 1}
+        this.persistPurchase(purchase3);
+        const purchase4 = {id: null, purchaseName: 'Mat', cost: 55, reciept: '', notes: 'Ost å bulla', noteCreatedDate: new Date().toLocaleDateString, purchaseDate: '21.04.2023', categoryId: 2}
+        this.persistPurchase(purchase4);
+        const category1 = {id: null, categoryName: 'Medical', description: 'Medical expenses'}
+        const category2 = {id: null, categoryName: 'Groceries', description: 'Food expenses'}
+        this.persistCategory(category1)
+        this.persistCategory(category2)
     };
 
-    findAll = () => {
+    findAllPurchases = () => {
         return this.purchases;
     };
 
-    findById = (id) => {
+    findPurchaseById = (id) => {
         return this.purchases.find(purchase => purchase.id === id);
     };
 
-    findByCategory = (category) => {
-        return this.purchases.filter(purchase => purchase.category === category);
+    findAllCategories = () => {
+        return this.categories;
+    }
+
+    findPurchaseByCategory = (category) => {
+        return this.purchases.filter(purchase => purchase.categoryId === category);
     };
 
-    persist = (purchase) => {
+    persistCategory = (category) => {
+        if (category != null) {
+            if (category.id == null ||!category.id) {
+                //new category
+                category.id = PurchaseService.getNextid();
+                this.categories.push(category);
+                //this.writeToStorage
+            }
+            else {
+                //update existing category
+                const existingCategoryindex = this.categories.findIndex((c) => c.id === category.id);
+                if (existingCategoryindex >= 0) {
+                    const oldCategory = this.categories[existingCategoryindex];
+                    const mergedCategory = {...oldCategory, ...category }
+                    this.categories[existingCategoryindex] = mergedCategory;
+                    //this.writeToStorage
+                }
+                else {
+                    return false;
+                };
+                return true;
+            }
+            return false;
+        }
+    };
+
+    persistPurchase = (purchase) => {
         if (purchase != null) {
             if (purchase.id == null || !purchase.id) {
                 //new purchase
-                purchase.id = PurchaseService.getNextId();
+                purchase.id = PurchaseService.getNextCategoryId();
                 this.purchases.push(purchase);
-                if (!this.categories.includes(purchase.category)) {
-                    //new category
-                    this.categories.push(purchase.category);
-                }
                 //this.writeToStorage
             }
             else {
