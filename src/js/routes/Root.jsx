@@ -1,12 +1,5 @@
-
 import { Outlet } from "react-router-dom"
-
 import NavBar from "../components/Navbar"
-
-import PurchaseService from '../services/storage/PurchaseService';
-const purchaseService = new PurchaseService;
-
-purchaseService.initialize();
 
 const Root = () => {
 
@@ -21,5 +14,5 @@ const Root = () => {
         </>
     )
 }
-export {purchaseService}
+
 export default Root;

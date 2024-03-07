@@ -1,6 +1,6 @@
 import { Form, redirect } from "react-router-dom";
 
-import { purchaseService } from "./Root";
+import { purchaseService } from "../services/services"
 
 export const action = async ({request}) => {
     const formData = await request.formData();

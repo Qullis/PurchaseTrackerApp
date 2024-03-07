@@ -13,16 +13,16 @@ const NavBar = () => {
                     <div className="collapse navbar-collapse" id="collapsibleNavbar">
                         <ul className="navbar-nav">
                             <li className="nav-item mx-2">
-                                <Link className="text-white text-decoration-none" to={'/'}>Home</Link>
+                                <Link className="text-white text-decoration-none nav-link" to={'/'}>Home</Link>
                             </li>
                             <li className="nav-item mx-2">
-                                <Link className="text-white text-decoration-none" to={'purchases/read/all'}>All purchases</Link>
+                                <Link className="text-white text-decoration-none nav-link" to={'purchases/read/all'}>All purchases</Link>
                             </li>
                             <li className="nav-item mx-2">
-                                <Link className="text-white text-decoration-none" to={'categories/add'}>Add new category</Link>
+                                <Link className="text-white text-decoration-none nav-link" to={'categories/add'}>Add new category</Link>
                             </li>
                             <li className="nav-item mx-2">
-                                <Link className="text-white text-decoration-none" to={'app/options'}>Options</Link>
+                                <Link className="text-white text-decoration-none nav-link" to={'app/options'}>Options</Link>
                             </li>
                         </ul>
                     </div>

@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from "react-router-dom";
-import { purchaseService } from "./Root";
+import { purchaseService } from "../services/services"
 
 export const loader = async () => {
        const purchases = await purchaseService.findAllPurchases(); 
@@ -12,7 +12,7 @@ const AllPurchasesPage = () => {
     const purchasesTable = purchases.map((purchase) => {
         return (
             <tr key={purchase.id}>
-                <td>&#9432;&emsp;<Link to={'purchases/purchase/' + purchase.id} className="text-white">{purchase.purchaseName}</Link></td>
+                <td>&#9432;&emsp;<Link to={'/purchases/purchase/read/' + purchase.id} className="text-white">{purchase.purchaseName}</Link></td>
                 <td>{purchase.cost}</td>
                 <td>{purchase.purchaseDate}</td>
                 <td>{purchase.categoryId}</td>

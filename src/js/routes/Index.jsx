@@ -1,7 +1,7 @@
 import CategoryCard from "../components/CategoryCard";
 import { Link, useLoaderData } from "react-router-dom";
 
-import { purchaseService } from "./Root";
+import { purchaseService } from "../services/services"
 export async function loader() {
     const purchases = await purchaseService.findAllPurchases();
     const categories = await purchaseService.findAllCategories();

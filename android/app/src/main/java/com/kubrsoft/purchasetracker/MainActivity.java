@@ -1,4 +1,4 @@
-package com.purchasetracker.ek;
+package com.kubrsoft.purchasetracker;
 
 import com.getcapacitor.BridgeActivity;
 
