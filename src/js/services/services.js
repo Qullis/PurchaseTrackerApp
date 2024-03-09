@@ -5,6 +5,7 @@ const photoService = new PhotoService;
 const purchaseService = new PurchaseService;
 const preferencesManager = new PreferencesManager;
 purchaseService.initialize();
+preferencesManager.initialize();
 
 
 export {purchaseService, preferencesManager, photoService}

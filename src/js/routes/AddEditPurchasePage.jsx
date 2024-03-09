@@ -28,10 +28,13 @@ export const action = async ({ params, request }) => {
 
 const AddEditPurchasePage = () => {
 
-    const [imageData, setImageData] = useState(null);
+    const [imageExists, setImageExists] = useState(false);
     const onClickPhotoButton = async () => {
         const image = await photoService.takePicture();
-        setImageData(image);
+        if(image){
+            purchaseService.temporaryImageData = image;
+            setImageExists(true);
+        }
     };
 
 
@@ -57,7 +60,7 @@ const AddEditPurchasePage = () => {
                 <div className="mb-3">
                     <label htmlFor="reciept" className="form-label">Add a reciept:</label>
                     <button type="button" className="btn btn-secondary d-block mb-2" onClick={() => onClickPhotoButton()}>Take picture</button>
-                    <input type="text" className="form-control" id="reciept" name="reciept" value={imageData} readOnly />
+                    <input type="text" className="form-control" id="reciept" name="reciept" value={imageExists} readOnly />
                 </div>
 
                 <div className="text-end">

@@ -4,21 +4,25 @@ class PreferencesManager {
             theme: "default",
             language: "en",
             autoBackupEnabled: false,
-            currency: "€"
+            currency: "€",
+            localDateTimeFormat: null,
         }
     }
 
+
+
     initialize = () => {
         //load preferences with capacitor preferences plugin
+        this.preferences.localDateTimeFormat = new Intl.DateTimeFormat();
     };
 
     setPreference = async (key, value) =>{
         //set the preference
     };
 
-    getPreference = () =>{
-        const preferences = this.preferences;
-        return preferences;
+    getPreference = (key) =>{
+        const preference = this.preferences[key];
+        return preference;
     };
 }
 

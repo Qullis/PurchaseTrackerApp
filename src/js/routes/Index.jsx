@@ -1,5 +1,6 @@
 import CategoryCard from "../components/CategoryCard";
 import { Link, useLoaderData } from "react-router-dom";
+import { useState } from "react";
 
 import { purchaseService } from "../services/services"
 export async function loader() {
@@ -11,19 +12,44 @@ export async function loader() {
 }
 
 const Index = () => {
+    //--------find the latest date------------//
+
+    const findLatestDate = (array) => {
+        if (array.length > 0) {
+            const sorted = array.sort(function (a, b) {
+                // Convert the date strings to Date objects
+                let dateA = new Date(a);
+                let dateB = new Date(b);
+
+                // Subtract the dates to get a value that is either negative, positive, or zero
+                return dateB - dateA;
+            });
+
+            return sorted[0]
+        }
+        else {
+            return 'No purchases added yet.'
+        }
+
+    };
+    //-----------------------------------------------------------------------------------------------------//
+    //-----map the categories--------//
     const {categories, purchases} = useLoaderData();
     //const categories = [];
     let categoryList = null;
     if (categories.length > 0) {
         categoryList = categories.map((category) => {
+            let dates=[];
             let totalSum = 0;
             purchases.forEach((purchase) => {
                 if (purchase.categoryId === category.id) {
+                    dates.push(purchase.purchaseDate);
                     totalSum += purchase.cost;
                 }
-            })
+            });
+            const latestDate = findLatestDate(dates);
             return (
-                <CategoryCard key={category.id} category={category.categoryName} totalSum={totalSum} link={'purchases/read/' + category.id} lastUpdated={'22.12.2023'} description={category.description} />
+                <CategoryCard key={category.id} category={category.categoryName} totalSum={totalSum} link={'purchases/read/' + category.id} lastUpdated={latestDate} description={category.description} />
             )
         })
     }

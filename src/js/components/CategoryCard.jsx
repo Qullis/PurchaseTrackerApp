@@ -16,7 +16,7 @@ const CategoryCard = ({category, totalSum, link, lastUpdated, description}) => {
                     <Link to={link} className="btn btn-primary">See all purchases</Link>
                 </div>
                 <div className="card-footer text-muted">
-                    Last updated {lastUpdated}
+                    Last purchase: {new Date(lastUpdated).toLocaleDateString()}
                 </div>
             </div>
 

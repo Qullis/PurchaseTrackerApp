@@ -1,28 +1,30 @@
 import { Link, useLoaderData, useParams } from "react-router-dom";
-import { purchaseService } from "../services/services";
+import { purchaseService, preferencesManager } from "../services/services";
 
 export const loader = async ({ params }) => {
     const id = parseInt(params.categoryId);
     const purchases = await purchaseService.findPurchaseByCategory(id);
-    return {purchases};
-  }
+    return { purchases };
+}
+const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
 
 const PurchasesByCategoryPage = () => {
-    const {categoryId} = useParams();
-    const {purchases} = useLoaderData();
+    
+    const { categoryId } = useParams();
+    const { purchases } = useLoaderData();
     const purchasesTable = purchases.map((purchase) => {
         return (
             <tr key={purchase.id}>
                 <td>&#9432;&emsp;<Link to={'/purchases/purchase/read/' + purchase.id} className="text-white">{purchase.purchaseName}</Link></td>
                 <td>{purchase.cost}</td>
-                <td>{purchase.purchaseDate}</td>
+                <td>{localDateTimeFormat.format(new Date(purchase.purchaseDate))}</td>
             </tr>
         )
     });
     return (
         <>
             <div className="text-end">
-                <Link to={'/purchases/add/new/'+categoryId} class="btn btn-dark m-1 fw-bold">+</Link>
+                <Link to={'/purchases/add/new/' + categoryId} className="btn btn-dark m-1 fw-bold">+</Link>
             </div>
             <div className="my-2">
                 <table className="table table-striped table-dark">

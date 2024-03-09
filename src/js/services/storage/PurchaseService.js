@@ -5,6 +5,7 @@ class PurchaseService {
     constructor() {
         this.purchases = [];
         this.categories = [];
+        this.temporaryImageData = null;
     }
     static lastUsedidValue = 0;
     static lastUsedCategoryIdValue = 0;
@@ -21,13 +22,13 @@ class PurchaseService {
 
     initialize = () => {
         //temporarily add some test data here
-        const purchase = { id: null, purchaseName: 'Insulin', cost: 200, reciept: null, notes: '2 mån förbrukning', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '22.12.2023', categoryId: 1 }
+        const purchase = { id: null, purchaseName: 'Insulin', cost: 200, reciept: false, notes: '2 mån förbrukning', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '12.22.2023', categoryId: 1 }
         this.persistPurchase(purchase);
-        const purchase2 = { id: null, purchaseName: 'Ozempic', cost: 120, reciept: null, notes: 'Vasa apotek', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '01.03.2024', categoryId: 1 }
+        const purchase2 = { id: null, purchaseName: 'Ozempic', cost: 120, reciept: false, notes: 'Vasa apotek', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '03.01.2024', categoryId: 1 }
         this.persistPurchase(purchase2);
-        const purchase3 = { id: null, purchaseName: 'Plåster', cost: 10, reciept: null, notes: '', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '26.11.2023', categoryId: 1 }
+        const purchase3 = { id: null, purchaseName: 'Plåster', cost: 10, reciept: false, notes: '', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '11.26.2023', categoryId: 1 }
         this.persistPurchase(purchase3);
-        const purchase4 = { id: null, purchaseName: 'Mat', cost: 55, reciept: null, notes: 'Ost å bulla', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '21.04.2023', categoryId: 2 }
+        const purchase4 = { id: null, purchaseName: 'Mat', cost: 55, reciept: false, notes: 'Ost å bulla', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '04.26.2023', categoryId: 2 }
         this.persistPurchase(purchase4);
         const category1 = { id: null, categoryName: 'Medical', description: 'Medical expenses' }
         const category2 = { id: null, categoryName: 'Groceries', description: 'Food expenses' }
@@ -82,15 +83,19 @@ class PurchaseService {
             if (purchase.id == null || !purchase.id) {
                 //new purchase
                 purchase.id = PurchaseService.getNextCategoryId();
-                if (purchase.reciept != null) {
-                    //get image in base64 format from recieved purchase and save it, then update the reciept data with the link to the image
-                    const imageData = purchase.reciept;
+                let imageUrl = null;
+                console.log(purchase.reciept)
+                if (purchase.reciept==='true') {
+                    //if true then get image data from this.temporaryImageData and save and set the imageUrl, otherwise url is null
+                    const imageData = this.temporaryImageData;
+                    console.log('got data in manager' + imageData);
                     const image = await this.saveImage(imageData, purchase.id);
-                    console.log(image.uri);
-                    const imageUrl = Capacitor.convertFileSrc(image.uri);
-                    purchase.reciept = imageUrl;
+                    console.log('saved: ' + image.uri);
+                    imageUrl = Capacitor.convertFileSrc(image.uri);
                 };
+                purchase.reciept = imageUrl;
                 this.purchases.push(purchase);
+                this.temporaryImageData = null; //remove temp data
 
                 //this.writeToStorage
             }
