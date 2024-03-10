@@ -16,7 +16,7 @@ const NavBar = () => {
                                 <Link className="text-white text-decoration-none nav-link" to={'/'}>Home</Link>
                             </li>
                             <li className="nav-item mx-2">
-                                <Link className="text-white text-decoration-none nav-link" to={'purchases/read/all'}>All purchases</Link>
+                                <Link className="text-white text-decoration-none nav-link" to={'purchases/read/custom/all'}>All purchases</Link>
                             </li>
                             <li className="nav-item mx-2">
                                 <Link className="text-white text-decoration-none nav-link" to={'categories/add'}>Add new category</Link>

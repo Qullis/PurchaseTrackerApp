@@ -5,7 +5,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 //routes/pages + loaders and actions
 import Root from './js/routes/Root';
 import Index, {loader as indexLoader} from './js/routes/Index';
-import ViewPurchasePage, {loader as viewPurchaseLoader} from './js/routes/ViewPurchasePage';
+import OptionsPage from './js/routes/OptionsPage';
+import ViewPurchasePage, {loader as viewPurchaseLoader, action as viewPurchasePageAction} from './js/routes/ViewPurchasePage';
 import AllPurchasesPage, {loader as allPurchasesLoader} from './js/routes/AllPurchasesPage';
 import PurchasesByCategoryPage, {loader as purchasesByCategoryLoader} from './js/routes/PurchasesByCategoryPage';
 import AddNewCategoryPage, {action as addCategoryAction} from './js/routes/AddNewCategoryPage';
@@ -34,14 +35,15 @@ const router = createBrowserRouter([
         loader: indexLoader,
       },
       {
-        path: "purchases/read/all",
+        path: "purchases/read/custom/:filter",
         element: <AllPurchasesPage />,
         loader: allPurchasesLoader,
       },
       {
-        path: "purchases/purchase/read/:id",
+        path: "purchases/purchase/read/:categoryId/:id",
         element: <ViewPurchasePage />,
         loader: viewPurchaseLoader,
+        action: viewPurchasePageAction,
       },
       {
         path: "purchases/read/:categoryId",
@@ -61,6 +63,10 @@ const router = createBrowserRouter([
         path: "categories/add",
         element: <AddNewCategoryPage />,
         action: addCategoryAction,
+      },
+      {
+        path: "app/options",
+        element: <OptionsPage />,
       }
     ],
   },

@@ -10,7 +10,6 @@ export async function loader() {
         purchases, categories
     }
 }
-
 const Index = () => {
     //--------find the latest date------------//
 
@@ -28,7 +27,7 @@ const Index = () => {
             return sorted[0]
         }
         else {
-            return 'No purchases added yet.'
+            return null;
         }
 
     };

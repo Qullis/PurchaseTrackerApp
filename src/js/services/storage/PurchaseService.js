@@ -52,6 +52,19 @@ class PurchaseService {
         return this.purchases.filter(purchase => purchase.categoryId === category);
     };
 
+    deletePurchaseById = (id) => {
+        try {
+            let purchasesCopy = [...this.purchases];
+            const index = purchasesCopy.findIndex((purchase) => purchase.id === id);
+            purchasesCopy.splice(index, 1);
+            //this.deleteFromStorage(id) //do first so if error we catch before removing from memory
+            this.purchases = purchasesCopy;
+            return true;
+        } catch (err) {
+            return false;
+        }
+    };
+
     persistCategory = (category) => {
         if (category != null) {
             if (category.id == null || !category.id) {
@@ -85,12 +98,10 @@ class PurchaseService {
                 purchase.id = PurchaseService.getNextCategoryId();
                 let imageUrl = null;
                 console.log(purchase.reciept)
-                if (purchase.reciept==='true') {
+                if (purchase.reciept === true) {
                     //if true then get image data from this.temporaryImageData and save and set the imageUrl, otherwise url is null
                     const imageData = this.temporaryImageData;
-                    console.log('got data in manager' + imageData);
                     const image = await this.saveImage(imageData, purchase.id);
-                    console.log('saved: ' + image.uri);
                     imageUrl = Capacitor.convertFileSrc(image.uri);
                 };
                 purchase.reciept = imageUrl;
@@ -120,7 +131,7 @@ class PurchaseService {
     saveImage = async (imageBase64, purchaseId) => {
         const fileName = Date.now() + '-' + purchaseId + '.jpeg';
         const savedFile = await Filesystem.writeFile({
-            path: 'kubrsoft/data/reciepts/'+fileName,
+            path: 'kubrsoft/data/reciepts/' + fileName,
             data: imageBase64,
             directory: Directory.Data,
             recursive: true

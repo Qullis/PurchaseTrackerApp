@@ -4,20 +4,29 @@ class PreferencesManager {
             theme: "default",
             language: "en",
             autoBackupEnabled: false,
-            currency: "€",
+            currency: null,
             localDateTimeFormat: null,
         }
     }
 
+    setCurrency(country, currency) {
+        this.preferences.currency = new Intl.NumberFormat(country, {style: 'currency', currency: currency})
+    };
 
 
     initialize = () => {
         //load preferences with capacitor preferences plugin
         this.preferences.localDateTimeFormat = new Intl.DateTimeFormat();
+        this.preferences.currency = new Intl.NumberFormat('EU', {style: 'currency', currency: 'EUR'})
     };
 
     setPreference = async (key, value) =>{
-        //set the preference
+        if (key === 'currency') {
+            this.setCurrency(value);
+        }
+        else {
+            this.preferences[key] = value;
+        };
     };
 
     getPreference = (key) =>{

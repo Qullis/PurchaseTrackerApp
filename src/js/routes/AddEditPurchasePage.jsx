@@ -6,10 +6,12 @@ import { purchaseService, photoService } from "../services/services"
 export const loader = async ({ params}) => {
     const { id } = params;
     let purchase = null;
+    let mode = 'new'
     if (id != "new") {
         purchase = await purchaseService.findPurchaseById(parseInt(id));
+        mode = 'edit'
     }
-    return { purchase };
+    return { purchase, mode };
 };
 
 export const action = async ({ params, request }) => {
@@ -22,6 +24,13 @@ export const action = async ({ params, request }) => {
     purchase.cost = cost;
     //add creation date to purchase
     purchase.PurchaseCreatedDate = new Date().toLocaleDateString();
+    //convert reciept value to boolean (sends ture or false to manager where url is added if true)
+    if (purchase.reciept === 'true') {
+        purchase.reciept = true;
+    } 
+    else {
+        purchase.reciept = false;
+    }
     await purchaseService.persistPurchase(purchase);
     return redirect('/');
 };

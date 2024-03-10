@@ -7,7 +7,7 @@ export const loader = async ({ params }) => {
     return { purchases };
 }
 const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
-
+const currencyFormat = preferencesManager.getPreference('currency');
 const PurchasesByCategoryPage = () => {
     
     const { categoryId } = useParams();
@@ -15,8 +15,8 @@ const PurchasesByCategoryPage = () => {
     const purchasesTable = purchases.map((purchase) => {
         return (
             <tr key={purchase.id}>
-                <td>&#9432;&emsp;<Link to={'/purchases/purchase/read/' + purchase.id} className="text-white">{purchase.purchaseName}</Link></td>
-                <td>{purchase.cost}</td>
+                <td>&#9432;&emsp;<Link to={'/purchases/purchase/read/' + purchase.categoryId + '/' + purchase.id} className="text-white">{purchase.purchaseName}</Link></td>
+                <td>{currencyFormat.format(purchase.cost)}</td>
                 <td>{localDateTimeFormat.format(new Date(purchase.purchaseDate))}</td>
             </tr>
         )
