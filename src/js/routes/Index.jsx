@@ -1,6 +1,7 @@
 import CategoryCard from "../components/CategoryCard";
 import { Link, useLoaderData } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 import { purchaseService } from "../services/services"
 export async function loader() {
@@ -11,9 +12,14 @@ export async function loader() {
     }
 }
 const Index = () => {
+    const testData = async () => {
+        const data = await axios.get('https://kubrsoft.com');
+        console.log(data);
+    };
     //--------find the latest date------------//
 
     const findLatestDate = (array) => {
+        //testData();
         if (array.length > 0) {
             const sorted = array.sort(function (a, b) {
                 // Convert the date strings to Date objects
@@ -33,12 +39,12 @@ const Index = () => {
     };
     //-----------------------------------------------------------------------------------------------------//
     //-----map the categories--------//
-    const {categories, purchases} = useLoaderData();
+    const { categories, purchases } = useLoaderData();
     //const categories = [];
     let categoryList = null;
     if (categories.length > 0) {
         categoryList = categories.map((category) => {
-            let dates=[];
+            let dates = [];
             let totalSum = 0;
             purchases.forEach((purchase) => {
                 if (purchase.categoryId === category.id) {
@@ -52,16 +58,19 @@ const Index = () => {
             )
         })
     }
-    else (categoryList = (
-        <div class="card m-2">
-            <h5 class="card-header">Info</h5>
-            <div class="card-body">
-                <h5 class="card-title">Create a new category</h5>
-                <p class="card-text">Welcome! To start using the app and add spendings, first you need to create a new category. Then you can start to add your purchases.</p>
-                <Link to={'categories/add'} class="btn btn-primary">Create new category</Link>
+    else {
+        console.log('react already running')
+        categoryList = (
+            <div class="card m-2">
+                <h5 class="card-header">Info</h5>
+                <div class="card-body">
+                    <h5 class="card-title">Create a new category</h5>
+                    <p class="card-text">Welcome! To start using the app and add spendings, first you need to create a new category. Then you can start to add your purchases.</p>
+                    <Link to={'categories/add'} class="btn btn-primary">Create new category</Link>
+                </div>
             </div>
-        </div>
-    ))
+        )
+    }
     return (
         <>
             {categoryList}

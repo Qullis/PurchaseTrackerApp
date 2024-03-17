@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { preferencesManager } from "../services/services";
 
-const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
-const currencyFormat = preferencesManager.getPreference('currency');
+const CategoryCard = ({ category, totalSum, link, lastUpdated, description }) => {
 
-const CategoryCard = ({category, totalSum, link, lastUpdated, description}) => {
+    const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
+    const currencyFormat = preferencesManager.getPreference('currency');
 
     let lastPurchaseElement = 'No purchases added yet.';
-    if(lastUpdated != null){
+    if (lastUpdated != null) {
         lastPurchaseElement = localDateTimeFormat.format(new Date(lastUpdated));
     }
     return (

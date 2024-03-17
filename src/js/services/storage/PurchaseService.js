@@ -1,5 +1,9 @@
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
+import { Dialog } from '@capacitor/dialog';
+import SQLiteDatabaseManager from './SQLiteManager';
+
+const sqliteDatabaseManager = new SQLiteDatabaseManager;
 
 class PurchaseService {
     constructor() {
@@ -20,20 +24,25 @@ class PurchaseService {
         return PurchaseService.lastUsedCategoryIdValue;
     }
 
-    initialize = () => {
-        //temporarily add some test data here
-        const purchase = { id: null, purchaseName: 'Insulin', cost: 200, reciept: false, notes: '2 mån förbrukning', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '12.22.2023', categoryId: 1 }
-        this.persistPurchase(purchase);
-        const purchase2 = { id: null, purchaseName: 'Ozempic', cost: 120, reciept: false, notes: 'Vasa apotek', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '03.01.2024', categoryId: 1 }
-        this.persistPurchase(purchase2);
-        const purchase3 = { id: null, purchaseName: 'Plåster', cost: 10, reciept: false, notes: '', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '11.26.2023', categoryId: 1 }
-        this.persistPurchase(purchase3);
-        const purchase4 = { id: null, purchaseName: 'Mat', cost: 55, reciept: false, notes: 'Ost å bulla', PurchaseCreatedDate: new Date().toLocaleDateString(), purchaseDate: '04.26.2023', categoryId: 2 }
-        this.persistPurchase(purchase4);
-        const category1 = { id: null, categoryName: 'Medical', description: 'Medical expenses' }
-        const category2 = { id: null, categoryName: 'Groceries', description: 'Food expenses' }
-        this.persistCategory(category1)
-        this.persistCategory(category2)
+    initialize = async () => {
+        try {
+            await sqliteDatabaseManager.openDatabase('purchaseTrackerDB')
+            const data = await sqliteDatabaseManager.getData();
+            this.purchases = data.purchases;
+            this.categories = data.categories;
+            console.log(JSON.stringify(data));
+            PurchaseService.lastUsedidValue = data.lastUsedIds[0].lastUsedPurchaseId;
+            console.log(data.lastUsedIds[0].lastUsedPurchaseId)
+            PurchaseService.lastUsedCategoryIdValue = data.lastUsedIds[0].lastUsedCategoryId;
+            
+
+        }
+        catch (err) {
+            console.log(err);
+            //dialog error
+        }
+        
+        
     };
 
     findAllPurchases = () => {
@@ -52,12 +61,12 @@ class PurchaseService {
         return this.purchases.filter(purchase => purchase.categoryId === category);
     };
 
-    deletePurchaseById = (id) => {
+    deletePurchaseById = async (id) => {
         try {
             let purchasesCopy = [...this.purchases];
             const index = purchasesCopy.findIndex((purchase) => purchase.id === id);
             purchasesCopy.splice(index, 1);
-            //this.deleteFromStorage(id) //do first so if error we catch before removing from memory
+            await sqliteDatabaseManager.removeItem(id);
             this.purchases = purchasesCopy;
             return true;
         } catch (err) {
@@ -65,13 +74,14 @@ class PurchaseService {
         }
     };
 
-    persistCategory = (category) => {
+    persistCategory = async (category) => {
+        //add try catch here
         if (category != null) {
             if (category.id == null || !category.id) {
                 //new category
-                category.id = PurchaseService.getNextid();
+                category.id = PurchaseService.getNextCategoryId();
                 this.categories.push(category);
-                //this.writeToStorage
+                await sqliteDatabaseManager.addItem(category, PurchaseService.lastUsedCategoryIdValue);
             }
             else {
                 //update existing category
@@ -80,7 +90,7 @@ class PurchaseService {
                     const oldCategory = this.categories[existingCategoryindex];
                     const mergedCategory = { ...oldCategory, ...category }
                     this.categories[existingCategoryindex] = mergedCategory;
-                    //this.writeToStorage
+                    await sqliteDatabaseManager.updateItem(mergedCategory)
                 }
                 else {
                     return false;
@@ -95,7 +105,7 @@ class PurchaseService {
         if (purchase != null) {
             if (purchase.id == null || !purchase.id) {
                 //new purchase
-                purchase.id = PurchaseService.getNextCategoryId();
+                purchase.id = PurchaseService.getNextid();
                 let imageUrl = null;
                 console.log(purchase.reciept)
                 if (purchase.reciept === true) {
@@ -108,7 +118,7 @@ class PurchaseService {
                 this.purchases.push(purchase);
                 this.temporaryImageData = null; //remove temp data
 
-                //this.writeToStorage
+                await sqliteDatabaseManager.addItem(purchase, PurchaseService.lastUsedidValue);
             }
             else {
                 //update existing purchase
@@ -117,7 +127,7 @@ class PurchaseService {
                     const oldPurchase = this.purchases[existingPurchaseindex];
                     const mergedPurchase = { ...oldPurchase, ...purchase }
                     this.purchases[existingPurchaseindex] = mergedPurchase;
-                    //this.writeToStorage
+                    await sqliteDatabaseManager.addItem(mergedPurchase);
                 }
                 else {
                     return false;

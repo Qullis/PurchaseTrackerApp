@@ -14,10 +14,11 @@ class PreferencesManager {
     };
 
 
-    initialize = () => {
+    initialize = async () => {
         //load preferences with capacitor preferences plugin
         this.preferences.localDateTimeFormat = new Intl.DateTimeFormat();
         this.preferences.currency = new Intl.NumberFormat('EU', {style: 'currency', currency: 'EUR'})
+        console.log('set preferences')
     };
 
     setPreference = async (key, value) =>{
@@ -31,6 +32,7 @@ class PreferencesManager {
 
     getPreference = (key) =>{
         const preference = this.preferences[key];
+        console.log(`Preference ${key}`);
         return preference;
     };
 }
