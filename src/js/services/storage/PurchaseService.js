@@ -61,12 +61,12 @@ class PurchaseService {
         return this.purchases.filter(purchase => purchase.categoryId === category);
     };
 
-    deletePurchaseById = async (id) => {
+    deletePurchaseById = async (id, info) => {
         try {
             let purchasesCopy = [...this.purchases];
             const index = purchasesCopy.findIndex((purchase) => purchase.id === id);
             purchasesCopy.splice(index, 1);
-            await sqliteDatabaseManager.removeItem(id);
+            await sqliteDatabaseManager.removeItem(id, info);
             this.purchases = purchasesCopy;
             return true;
         } catch (err) {

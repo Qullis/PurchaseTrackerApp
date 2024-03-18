@@ -131,21 +131,30 @@ class SQLiteDatabaseManager {
 
     }
 
-    removeItem = async (id) => {
+    removeItem = async (id, info) => {
         const transactionPromise = new Promise((resolve, reject) => {
             let result = false;
             this.db.transaction(function (tx) {
+                if (id && info === 'purchase') {
+                    var query = "DELETE FROM userPurchases WHERE id = ?";
 
-                var query = "DELETE FROM userPurchases WHERE id = ?";
-
-                tx.executeSql(query, [id], function (tx, res) {
-                    console.log("removeId: " + res.insertId + " -- probably 1");
-                    console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
-                    result = true;
-                },
-                    function (tx, error) {
-                        reject(error)
+                    tx.executeSql(query, [id], function (tx, res) {
+                        console.log("removeId: " + res.insertId + " -- probably 1");
+                        console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+                        result = true;
                     });
+                }
+                else if (id && info === 'category') {
+                    var query = "DELETE FROM userCategories WHERE id =?";
+                    tx.executeSql(query, [id], function (tx, res) {
+                        console.log("removeId: " + res.insertId + " -- probably 1");
+                        console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+                        result = true;
+                    });
+                }
+                else {
+                    throw new Error("Could not delete; check passed parameters");
+                }
             }, function (error) {
                 reject(error)
             }, function () {

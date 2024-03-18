@@ -6,10 +6,10 @@ export const loader = async ({ params }) => {
     const purchases = await purchaseService.findPurchaseByCategory(id);
     return { purchases };
 }
-const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
-const currencyFormat = preferencesManager.getPreference('currency');
 const PurchasesByCategoryPage = () => {
-    
+    const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
+    const currencyFormat = preferencesManager.getPreference('currency');
+
     const { categoryId } = useParams();
     const { purchases } = useLoaderData();
     const purchasesTable = purchases.map((purchase) => {
@@ -23,13 +23,16 @@ const PurchasesByCategoryPage = () => {
     });
     return (
         <>
-            <div className="text-end">
-                <Link to={'/purchases/add/new/' + categoryId} className="btn btn-dark m-1 fw-bold">+</Link>
+            <div className="bg-light text-dark">
+                <div>Category</div>
+                <div className="text-end">
+                    <Link to={'/purchases/add/new/' + categoryId} className="btn btn-dark m-1 fw-bold">+</Link>
+                </div>
             </div>
             <div className="my-2">
                 <table className="table table-striped table-dark">
                     <thead className="table-info">
-                        <tr><th className="bg-light">Purchase: </th><th className="bg-light"> Cost: </th><th className="bg-light"> Purchase-date:</th></tr>
+                        <tr><th>Purchase: </th><th> Cost: </th><th> Purchase-date:</th></tr>
                     </thead>
                     <tbody>
                         {purchasesTable}

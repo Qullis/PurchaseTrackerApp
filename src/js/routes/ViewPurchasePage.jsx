@@ -20,7 +20,8 @@ export const action = async ({ params }) => {
     });
     if (value) {
         //user clicked yes
-        const result = await purchaseService.deletePurchaseById(id);
+        const info = 'purchase'
+        const result = await purchaseService.deletePurchaseById(id, info);
         //check if we redirect to all purchases list or specified category
         if (category === 'all') {
             return redirect('/purchases/read/custom/all');

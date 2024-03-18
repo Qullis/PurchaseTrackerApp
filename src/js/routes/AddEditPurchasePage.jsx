@@ -23,7 +23,7 @@ export const action = async ({ params, request }) => {
     const cost = parseFloat(purchase.cost);
     purchase.cost = cost;
     //add creation date to purchase
-    purchase.PurchaseCreatedDate = new Date().toLocaleDateString();
+    purchase.PurchaseCreatedDate = new Date();
     //convert reciept value to boolean (sends ture or false to manager where url is added if true)
     if (purchase.reciept === 'true') {
         purchase.reciept = true;

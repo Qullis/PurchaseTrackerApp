@@ -4,9 +4,9 @@ import { preferencesManager } from "../services/services";
 import RecieptPopupModal from "./RecieptPopupModal";
 import icon from "../../assets/icons/card-list.svg";
 
-const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
-const currencyFormat = preferencesManager.getPreference('currency');
 const PurchaseCard = ({ purchase }) => {
+    const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
+    const currencyFormat = preferencesManager.getPreference('currency');
     if (purchase.reciept === null) {
         purchase.reciept = '/';
     };

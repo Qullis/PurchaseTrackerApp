@@ -6,9 +6,9 @@ export const loader = async () => {
        return {purchases};
 };
 
-const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
-const currencyFormat = preferencesManager.getPreference('currency');
 const AllPurchasesPage = () => {
+    const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
+    const currencyFormat = preferencesManager.getPreference('currency');
 
     const {filter} = useParams();
     const {purchases} = useLoaderData();
