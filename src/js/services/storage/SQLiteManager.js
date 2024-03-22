@@ -15,7 +15,7 @@ class SQLiteDatabaseManager {
         const transactionPromise = new Promise((resolve, reject) => {
             this.db.transaction(async function (tx) {
 
-                tx.executeSql(`CREATE TABLE IF NOT EXISTS userPurchases (id, purchaseName, cost, reciept, PurchaseCreatedDate, purchaseDate, categoryId)`);
+                tx.executeSql(`CREATE TABLE IF NOT EXISTS userPurchases (id, purchaseName, cost, notes, reciept, PurchaseCreatedDate, purchaseDate, categoryId)`);
                 tx.executeSql(`CREATE TABLE IF NOT EXISTS userCategories (id, categoryName, description)`);
                 tx.executeSql(`CREATE TABLE IF NOT EXISTS userLastUsedIds (lastUsedPurchaseId, lastUsedCategoryId)`);
                 tx.executeSql(`INSERT INTO userLastUsedIds (lastUsedPurchaseId, lastUsedCategoryId) SELECT 0, 0 WHERE NOT EXISTS (SELECT * FROM userLastUsedIds);`);
@@ -36,9 +36,9 @@ class SQLiteDatabaseManager {
         this.db.transaction(function (tx) {
 
             if (item.purchaseName && lastUsedId) {
-                const purchaseQuery = "INSERT INTO userPurchases (id, purchaseName, cost, reciept, PurchaseCreatedDate, purchaseDate, categoryId) VALUES (?,?,?,?,?,?,?)";
+                const purchaseQuery = "INSERT INTO userPurchases (id, purchaseName, cost, notes, reciept, PurchaseCreatedDate, purchaseDate, categoryId) VALUES (?,?,?,?,?,?,?,?)";
                 const lastIdsQuery = "UPDATE userLastUsedIds SET lastUsedPurchaseId = ?"
-                tx.executeSql(purchaseQuery, [item.id, item.purchaseName, item.cost, item.reciept, item.PurchaseCreatedDate, item.purchaseDate, item.categoryId], function (tx, res) {
+                tx.executeSql(purchaseQuery, [item.id, item.purchaseName, item.cost, item.notes, item.reciept, item.PurchaseCreatedDate, item.purchaseDate, item.categoryId], function (tx, res) {
                     console.log("insertId: " + res.insertId + " -- probably 1");
                     console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
                 });
@@ -76,13 +76,21 @@ class SQLiteDatabaseManager {
         let lastUsedIds = [];
         const transactionPromise = new Promise((resolve, reject) => {
             this.db.transaction(function (tx) {
-                const purchaseQuery = "SELECT id, purchaseName, cost, reciept, PurchaseCreatedDate, purchaseDate, categoryId FROM userPurchases";
+                const purchaseQuery = "SELECT id, purchaseName, cost, notes, reciept, PurchaseCreatedDate, purchaseDate, categoryId FROM userPurchases";
                 const categoryQuery = "SELECT id, categoryName, description FROM userCategories"
                 const lastIdsQuery = "SELECT lastUsedPurchaseId, lastUsedCategoryId FROM userLastUsedIds"
                 //get purchases from the database
                 tx.executeSql(purchaseQuery, undefined, function (tx, resultSet) {
                     if (resultSet.rows.length > 0) {
                         for (let i = 0; i < resultSet.rows.length; i++) {
+                            //convert to boolean(the plugin stores boolean values as strings)
+                            //true is redundant because we will only ever store a link or false
+                            if(resultSet.rows.item(i).reciept === 'true') {
+                                resultSet.rows.item(i).reciept = true;
+                            }
+                            else if (resultSet.rows.item(i).reciept === 'false') {
+                                resultSet.rows.item(i).reciept = false;
+                            };
                             purchases.push(resultSet.rows.item(i));
                             console.log(resultSet.rows.item(i));
                         };
@@ -136,7 +144,7 @@ class SQLiteDatabaseManager {
             let result = false;
             this.db.transaction(function (tx) {
                 if (id && info === 'purchase') {
-                    var query = "DELETE FROM userPurchases WHERE id = ?";
+                    const query = "DELETE FROM userPurchases WHERE id = ?";
 
                     tx.executeSql(query, [id], function (tx, res) {
                         console.log("removeId: " + res.insertId + " -- probably 1");
@@ -145,10 +153,16 @@ class SQLiteDatabaseManager {
                     });
                 }
                 else if (id && info === 'category') {
-                    var query = "DELETE FROM userCategories WHERE id =?";
-                    tx.executeSql(query, [id], function (tx, res) {
+                    const categoryQuery = "DELETE FROM userCategories WHERE id =?";
+                    const purchasesQuery = "DELETE FROM userPurchases WHERE categoryId = ?";
+                    tx.executeSql(categoryQuery, [id], function (tx, res) {
                         console.log("removeId: " + res.insertId + " -- probably 1");
                         console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+                        result = true;
+                    });
+                    tx.executeSql(purchasesQuery, [id], function (tx, res) {
+                        console.log("removeId: " + res.insertId + " -- ");
+                        console.log("rowsAffected: " + res.rowsAffected + " -- none, one, or many");
                         result = true;
                     });
                 }
@@ -171,10 +185,19 @@ class SQLiteDatabaseManager {
         const transactionPromise = new Promise((resolve, reject) => {
             let result = false;
             this.db.transaction(function (tx) {
-                if (item && item.id) {
-                    var query = "UPDATE userPurchases SET purchaseName = ?, cost = ?, reciept = ?, PurchaseCreatedDate = ?, purchaseDate = ?, categoryId = ? WHERE id = ?";
+                if (item && item.id && item.purchaseName) {
+                    var query = "UPDATE userPurchases SET purchaseName = ?, cost = ?, notes=?, reciept = ?, PurchaseCreatedDate = ?, purchaseDate = ?, categoryId = ? WHERE id = ?";
 
-                    tx.executeSql(query, [item.purchaseName, item.cost, item.reciept, item.PurchaseCreatedDate, item.purchaseDate, item.categoryId, item.id], function (tx, res) {
+                    tx.executeSql(query, [item.purchaseName, item.cost, item.notes, item.reciept, item.PurchaseCreatedDate, item.purchaseDate, item.categoryId, item.id], function (tx, res) {
+                        console.log("update insertId: " + res.insertId);
+                        console.log("update rowsAffected: " + res.rowsAffected);
+                        console.log("update res: " + JSON.stringify(res));
+                        result = true;
+                    });
+                }
+                else if (item && item.id && item.categoryName){
+                    var query = "UPDATE userCategories SET categoryName =?, description =? WHERE id =?";
+                    tx.executeSql(query, [item.categoryName, item.description, item.id], function (tx, res) {
                         console.log("update insertId: " + res.insertId);
                         console.log("update rowsAffected: " + res.rowsAffected);
                         console.log("update res: " + JSON.stringify(res));

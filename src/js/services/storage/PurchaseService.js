@@ -26,23 +26,23 @@ class PurchaseService {
 
     initialize = async () => {
         try {
-            await sqliteDatabaseManager.openDatabase('purchaseTrackerDB')
+            await sqliteDatabaseManager.openDatabase('purchaseTracker_DB')
             const data = await sqliteDatabaseManager.getData();
             this.purchases = data.purchases;
             this.categories = data.categories;
             console.log(JSON.stringify(data));
             PurchaseService.lastUsedidValue = data.lastUsedIds[0].lastUsedPurchaseId;
-            console.log(data.lastUsedIds[0].lastUsedPurchaseId)
+            console.log(data.purchases[0])
             PurchaseService.lastUsedCategoryIdValue = data.lastUsedIds[0].lastUsedCategoryId;
-            
+
 
         }
         catch (err) {
             console.log(err);
             //dialog error
         }
-        
-        
+
+
     };
 
     findAllPurchases = () => {
@@ -50,14 +50,19 @@ class PurchaseService {
     };
 
     findPurchaseById = (id) => {
-        return this.purchases.find(purchase => purchase.id === id);
+        const found = this.purchases.find(purchase => purchase.id === id);
+        return found
     };
 
     findAllCategories = () => {
         return this.categories;
     }
 
-    findPurchaseByCategory = (category) => {
+    findCategoryById = (id) => {
+        return this.categories.find(category => category.id === id);
+    };
+
+    findPurchasesByCategory = (category) => {
         return this.purchases.filter(purchase => purchase.categoryId === category);
     };
 
@@ -67,6 +72,21 @@ class PurchaseService {
             const index = purchasesCopy.findIndex((purchase) => purchase.id === id);
             purchasesCopy.splice(index, 1);
             await sqliteDatabaseManager.removeItem(id, info);
+            this.purchases = purchasesCopy;
+            return true;
+        } catch (err) {
+            return false;
+        }
+    };
+
+    deleteCategoryById = async (id) => {
+        try {
+            let categoriesCopy = [...this.categories];
+            const index = categoriesCopy.findIndex((category) => category.id === id);
+            categoriesCopy.splice(index, 1);
+            let purchasesCopy = this.purchases.filter((purchase) => purchase.categoryId != id);
+            await sqliteDatabaseManager.removeItem(id, 'category');
+            this.categories = categoriesCopy;
             this.purchases = purchasesCopy;
             return true;
         } catch (err) {
@@ -106,8 +126,7 @@ class PurchaseService {
             if (purchase.id == null || !purchase.id) {
                 //new purchase
                 purchase.id = PurchaseService.getNextid();
-                let imageUrl = null;
-                console.log(purchase.reciept)
+                let imageUrl = false;
                 if (purchase.reciept === true) {
                     //if true then get image data from this.temporaryImageData and save and set the imageUrl, otherwise url is null
                     const imageData = this.temporaryImageData;
@@ -122,12 +141,23 @@ class PurchaseService {
             }
             else {
                 //update existing purchase
-                const existingPurchaseindex = thispurchases.findIndex((p) => p.id === purchase.id);
+                const existingPurchaseindex = this.purchases.findIndex((p) => p.id === purchase.id);
+                const oldPurchase = this.purchases[existingPurchaseindex];
                 if (existingPurchaseindex >= 0) {
-                    const oldPurchase = this.purchases[existingPurchaseindex];
+
+                    if (purchase.reciept === true) {
+                        //if true then get image data from this.temporaryImageData and save and set the imageUrl
+                        const imageData = this.temporaryImageData;
+                        const image = await this.saveImage(imageData, purchase.id);
+                        const imageUrl = Capacitor.convertFileSrc(image.uri);
+                        purchase.reciept = imageUrl;
+                    };
+                    //if reciept is not true then it's either false or already has an url associated with it
+                    this.temporaryImageData = null; //remove temp data
+
                     const mergedPurchase = { ...oldPurchase, ...purchase }
                     this.purchases[existingPurchaseindex] = mergedPurchase;
-                    await sqliteDatabaseManager.addItem(mergedPurchase);
+                    await sqliteDatabaseManager.updateItem(mergedPurchase);
                 }
                 else {
                     return false;

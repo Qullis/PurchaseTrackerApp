@@ -23,7 +23,7 @@ const AddNewCategoryPage = () => {
                 <textarea className="form-control" id="categoryDescriptionInput" name="description" rows="2" placeholder="Optional"></textarea>
             </div>
             <div className="text-end">
-                <button type="submit" className="btn btn-primary">Add new category</button>
+                <button type="submit" className="btn btn-primary bi bi-folder-plus"> Add new category</button>
             </div>
         </Form>
         </>

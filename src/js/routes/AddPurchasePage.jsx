@@ -3,17 +3,6 @@ import { useState } from "react";
 
 import { purchaseService, photoService } from "../services/services"
 
-export const loader = async ({ params}) => {
-    const { id } = params;
-    let purchase = null;
-    let mode = 'new'
-    if (id != "new") {
-        purchase = await purchaseService.findPurchaseById(parseInt(id));
-        mode = 'edit'
-    }
-    return { purchase, mode };
-};
-
 export const action = async ({ params, request }) => {
     const {categoryId} = params;
     const formData = await request.formData();
@@ -35,7 +24,7 @@ export const action = async ({ params, request }) => {
     return redirect('/');
 };
 
-const AddEditPurchasePage = () => {
+const AddPurchasePage = () => {
 
     const [imageExists, setImageExists] = useState(false);
     const onClickPhotoButton = async () => {
@@ -68,16 +57,23 @@ const AddEditPurchasePage = () => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="reciept" className="form-label">Add a reciept:</label>
-                    <button type="button" className="btn btn-secondary d-block mb-2" onClick={() => onClickPhotoButton()}>Take picture</button>
-                    <input type="text" className="form-control" id="reciept" name="reciept" value={imageExists} readOnly />
+                    <button type="button" className="btn btn-secondary d-block mb-2 bi bi-camera" onClick={() => onClickPhotoButton()}> Take picture</button>
+                    <input type="text" className="form-control" id="reciept" name="reciept" value={imageExists} hidden />
+                    {!imageExists && 
+                        <div>No reciept added. Take a picture of a reciept to add one.</div>
+                    }
+                    {imageExists &&
+                        <div>Reciept added <i className="bi bi-file-check"></i></div>
+                    }
+                    
                 </div>
 
                 <div className="text-end">
-                    <button type="submit" className="btn btn-primary">Add new purchase</button>
+                    <button type="submit" className="btn btn-primary bi bi-file-earmark-plus"> Add new purchase</button>
                 </div>
             </Form>
         </>
     )
 }
 
-export default AddEditPurchasePage;
+export default AddPurchasePage;

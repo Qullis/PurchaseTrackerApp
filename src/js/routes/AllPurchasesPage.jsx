@@ -15,7 +15,7 @@ const AllPurchasesPage = () => {
     const purchasesTable = purchases.map((purchase) => {
         return (
             <tr key={purchase.id}>
-                <td>&#9432;&emsp;<Link to={'/purchases/purchase/read/' + filter + '/' + purchase.id} className="text-white">{purchase.purchaseName}</Link></td>
+                <td><Link to={'/purchases/' + purchase.categoryId + '/' + purchase.id + '/read'} className="text-white"> - {purchase.purchaseName}</Link></td>
                 <td>{currencyFormat.format(purchase.cost)}</td>
                 <td>{localDateTimeFormat.format(new Date(purchase.purchaseDate))}</td>
             </tr>
@@ -25,7 +25,7 @@ const AllPurchasesPage = () => {
     return (
         <>
             <div>
-                <table className="table table-striped table-dark">
+                <table className="table table-dark">
                     <thead className="table-info">
                         <tr>
                             <th>Purchase</th><th>Cost</th><th>Purchase-date:</th>

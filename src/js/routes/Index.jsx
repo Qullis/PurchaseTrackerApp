@@ -54,19 +54,18 @@ const Index = () => {
             });
             const latestDate = findLatestDate(dates);
             return (
-                <CategoryCard key={category.id} category={category.categoryName} totalSum={totalSum} link={'purchases/read/' + category.id} lastUpdated={latestDate} description={category.description} />
+                <CategoryCard key={category.id} category={category.categoryName} totalSum={totalSum} link={'purchases/read/' + category.id} lastUpdated={latestDate} description={category.description} ammountOfPurchases={purchases.length} />
             )
         })
     }
     else {
-        console.log('react already running')
         categoryList = (
             <div class="card m-2">
                 <h5 class="card-header">Info</h5>
                 <div class="card-body">
                     <h5 class="card-title">Create a new category</h5>
                     <p class="card-text">Welcome! To start using the app and add spendings, first you need to create a new category. Then you can start to add your purchases.</p>
-                    <Link to={'categories/add'} class="btn btn-primary">Create new category</Link>
+                    <Link to={'categories/add'} class="btn btn-primary bi bi-folder-plus"> Create new category</Link>
                 </div>
             </div>
         )

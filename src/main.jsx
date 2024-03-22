@@ -6,16 +6,20 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from './js/routes/Root';
 import Index, { loader as indexLoader } from './js/routes/Index';
 import OptionsPage from './js/routes/OptionsPage';
+import EditPurchasePage, {loader as editPurchaseLoader, action as editPurchaseAction} from './js/routes/editPurchasePage';
 import ViewPurchasePage, { loader as viewPurchaseLoader, action as viewPurchasePageAction } from './js/routes/ViewPurchasePage';
 import AllPurchasesPage, { loader as allPurchasesLoader } from './js/routes/AllPurchasesPage';
+import CategoryOptionsPage, {action as categoryOptionsAction} from './js/routes/CategoryOptionsPage';
 import PurchasesByCategoryPage, { loader as purchasesByCategoryLoader } from './js/routes/PurchasesByCategoryPage';
 import AddNewCategoryPage, { action as addCategoryAction } from './js/routes/AddNewCategoryPage';
-import AddEditPurchasePage, { loader as addEditPurchaseLoader, action as addEditPurchaseAction } from './js/routes/AddEditPurchasePage';
+import AddPurchasePage, { action as addPurchaseAction } from './js/routes/AddPurchasePage';
 
 //Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 //Bootstrap bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
+// Bootstrap Icons
+import 'bootstrap-icons/font/bootstrap-icons.css';
 //capacitor specific code
 import './js/App'
 //ionic PWA elements for camera
@@ -46,7 +50,7 @@ const startApp = async () => {
           loader: allPurchasesLoader,
         },
         {
-          path: "purchases/purchase/read/:categoryId/:id",
+          path: "purchases/:categoryId/:id/read",
           element: <ViewPurchasePage />,
           loader: viewPurchaseLoader,
           action: viewPurchasePageAction,
@@ -57,18 +61,25 @@ const startApp = async () => {
           loader: purchasesByCategoryLoader,
         },
         {
-          path: "purchases/add/:id/:categoryId",
-          element: <AddEditPurchasePage />,
-          loader: addEditPurchaseLoader,
-          action: addEditPurchaseAction,
+          path: "purchases/add/:categoryId",
+          element: <AddPurchasePage />,
+          action: addPurchaseAction,
         },
         {
-          path: "purchases/update/:id",
+          path: "purchases/:id/update",
+          element: <EditPurchasePage />,
+          loader: editPurchaseLoader,
+          action: editPurchaseAction,
         },
         {
           path: "categories/add",
           element: <AddNewCategoryPage />,
           action: addCategoryAction,
+        },
+        {
+          path: "categories/options/:categoryId",
+          element: <CategoryOptionsPage />,
+          action: categoryOptionsAction,
         },
         {
           path: "app/options",

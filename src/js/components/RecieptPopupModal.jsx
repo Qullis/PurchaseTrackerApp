@@ -16,7 +16,7 @@ const RecieptPopupModal = ({imgUrl}) => {
                             <img className="mw-100" src={imgUrl} alt="Reciept" />
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-secondary bi bi-x-circle" data-bs-dismiss="modal"> Close</button>
                         </div>
                     </div>
                 </div>

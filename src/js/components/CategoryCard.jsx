@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { preferencesManager } from "../services/services";
 
-const CategoryCard = ({ category, totalSum, link, lastUpdated, description }) => {
+const CategoryCard = ({ category, totalSum, link, lastUpdated, description, ammountOfPurchases }) => {
 
     const localDateTimeFormat = preferencesManager.getPreference('localDateTimeFormat');
     const currencyFormat = preferencesManager.getPreference('currency');
@@ -14,7 +14,7 @@ const CategoryCard = ({ category, totalSum, link, lastUpdated, description }) =>
         <>
             <div className="card text-center m-2">
                 <div className="card-header">
-                    Category
+                    {ammountOfPurchases} purchases in category
                 </div>
                 <div className="card-body">
                     <h5 className="card-title">{category}</h5>
