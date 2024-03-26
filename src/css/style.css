@@ -1,3 +1,15 @@
-.body-bg {
+.body-default {
   background-color: rgb(60, 59, 59);
+}
+.body-light {
+  background-color: rgb(162, 160, 160);
+}
+.body-blue {
+  background-color: rgb(87, 140, 246);
+}
+.body-yellow {
+  background-color: rgb(210, 213, 8);
+}
+.body-green {
+  background-color: rgb(26, 79, 41);
 }

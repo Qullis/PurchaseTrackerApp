@@ -1,6 +1,6 @@
 {
-  "appId": "com.kubrsoft.purchasetracker",
-  "appName": "Purchase Tracker",
+  "appId": "com.kubrsoft.walletbuddy",
+  "appName": "WalletBuddy",
   "bundledWebRuntime": false,
   "webDir": "dist",
   "plugins": {

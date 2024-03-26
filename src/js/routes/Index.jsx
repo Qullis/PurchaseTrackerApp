@@ -46,15 +46,17 @@ const Index = () => {
         categoryList = categories.map((category) => {
             let dates = [];
             let totalSum = 0;
+            let totalPurchases = 0;
             purchases.forEach((purchase) => {
                 if (purchase.categoryId === category.id) {
                     dates.push(purchase.purchaseDate);
                     totalSum += purchase.cost;
+                    totalPurchases++;
                 }
             });
             const latestDate = findLatestDate(dates);
             return (
-                <CategoryCard key={category.id} category={category.categoryName} totalSum={totalSum} link={'purchases/read/' + category.id} lastUpdated={latestDate} description={category.description} ammountOfPurchases={purchases.length} />
+                <CategoryCard key={category.id} category={category.categoryName} totalSum={totalSum} link={'purchases/read/' + category.id} lastUpdated={latestDate} description={category.description} totalPurchases={totalPurchases} />
             )
         })
     }

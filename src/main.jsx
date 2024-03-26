@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 //routes/pages + loaders and actions
 import Root from './js/routes/Root';
 import Index, { loader as indexLoader } from './js/routes/Index';
-import OptionsPage from './js/routes/OptionsPage';
+import OptionsPage, {loader as optionsLoader} from './js/routes/OptionsPage';
 import EditPurchasePage, {loader as editPurchaseLoader, action as editPurchaseAction} from './js/routes/editPurchasePage';
 import ViewPurchasePage, { loader as viewPurchaseLoader, action as viewPurchasePageAction } from './js/routes/ViewPurchasePage';
 import AllPurchasesPage, { loader as allPurchasesLoader } from './js/routes/AllPurchasesPage';
@@ -84,6 +84,7 @@ const startApp = async () => {
         {
           path: "app/options",
           element: <OptionsPage />,
+          loader: optionsLoader,
         }
       ],
     },

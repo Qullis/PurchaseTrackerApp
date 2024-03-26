@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
+import { useState } from "react";
 
 import { preferencesManager } from "../services/services";
 
+export const loader = async () => {
+    const theme = await preferencesManager.getPreference("theme");
+    const currency = await preferencesManager.getPreference("currencyCode");
+    return {theme, currency}
+};
+
 const OptionsPage = () => {
+
+    const {theme, currency} = useLoaderData();
+
+    const [currentTheme, setCurrentTheme] = useState(theme);
+    const [currentCurrency, setCurrentCurrency] = useState(currency);
 
     const handleCurrencyCange = (event) => {
         const currency = event.target.value;
@@ -22,19 +34,24 @@ const OptionsPage = () => {
         }
     };
 
+    const handleThemeChange = (event) => {
+        const theme = event.target.value;
+        preferencesManager.setTheme(theme);
+    };
+
     return (
         <>
             <div>
                 <label htmlFor="appThemeSelect" className="text-white">Choose a theme:</label>
-                <select className="form-select" aria-label="Choose a theme" id="appThemeSelect" name="appThemeSelect" defaultValue={"Default"}>
-                    <option value="Default">Default</option>
-                    <option value="Light">Light</option>
-                    <option value="Green">Green</option>
-                    <option value="Yellow">Yellow</option>
-                    <option value="Blue">Blue</option>
+                <select className="form-select" aria-label="Choose a theme" id="appThemeSelect" name="appThemeSelect" defaultValue={currentTheme} onChange={handleThemeChange}>
+                    <option value="default">Default</option>
+                    <option value="light">Light</option>
+                    <option value="green">Green</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="blue">Blue</option>
                 </select>
                 <label htmlFor="appCurrencySelect" className="text-white mt-2">Currency for displaying prices:</label>
-                <select className="form-select" aria-label="Choose a currency" id="appCurrencySelect" name="appCurrencySelect" defaultValue={"EUR"} onChange={handleCurrencyCange}>
+                <select className="form-select" aria-label="Choose a currency" id="appCurrencySelect" name="appCurrencySelect" defaultValue={currentCurrency} onChange={handleCurrencyCange}>
                     <option value="EUR">Euro</option>
                     <option value="USD">United States dollar</option>
                     <option value="GBP">Pound sterling</option>
